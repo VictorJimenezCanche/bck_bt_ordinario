@@ -32,7 +32,7 @@ def create_app():
     # Prueba la conexión a la db
     app.register_blueprint(test_bp, url_prefix='/api/test')
     # Ruta health
-    app.register_blueprint(health_bp, url_prefix='/health')
+    app.register_blueprint(health_bp, url_prefix='/api/health')
 
     return app
 
