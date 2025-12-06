@@ -7,6 +7,7 @@ from routes.services import services_bp
 from routes.test_db import test_bp
 from routes.transactions import transactions_bp
 from routes.reviews import reviews_bp
+from routes.health import health_bp
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 
@@ -30,6 +31,8 @@ def create_app():
     app.register_blueprint(transactions_bp, url_prefix='/api/transactions')
     # Prueba la conexión a la db
     app.register_blueprint(test_bp, url_prefix='/api/test')
+    # Ruta health
+    app.register_blueprint(health_bp, url_prefix='/health')
 
     return app
 
