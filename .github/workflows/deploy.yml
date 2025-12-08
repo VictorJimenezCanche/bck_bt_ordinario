@@ -26,7 +26,6 @@ jobs:
       - name: Build and push images
         run: |
         
-          
           REPO_LOWER=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
           IMAGE_NAME="ghcr.io/$REPO_LOWER"
           
@@ -41,3 +40,8 @@ jobs:
           echo "Pushing images..."
           docker push $SHA_TAG
           docker push $LATEST_TAG
+
+      - name: Notify Render to Deploy New Image
+        run: |
+          echo "Triggering Render deployment using WebHook..."
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
