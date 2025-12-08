@@ -10,4 +10,4 @@ def health():
         "status": "ok",
         "service": "Backend Banco de Tiempo",
         "port": os.getenv("PORT", 8080),
-        "message": "El servidor está activo y funcionando correctamente."}), 200
+        "message": "El servidor está activo y funcionando correctamente. Este mensaje no deberia de verse"}), 200
