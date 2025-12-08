@@ -5,27 +5,39 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read 
+
 env:
-  IMAGE_BASE: ghcr.io/victorjimenezcanche/bck_bt_ordinario/flask-backend
+  IMAGE_NAME: ghcr.io/${{ github.repository }} 
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-
+    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Login to GHCR
-      run: echo ${{ secrets.GHCR_PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Login to GHCR (Using Repository Secret)
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }} 
+          password: ${{ secrets.GHCR_PAT }} 
 
-    - name: Build image with commit SHA tag
-      run: docker build -t $IMAGE_BASE:${{ github.sha }} .
-
-    - name: Push image with commit SHA tag
-      run: docker push $IMAGE_BASE:${{ github.sha }}
-
-    - name: Also tag as latest
-      run: |
-        docker tag $IMAGE_BASE:${{ github.sha }} $IMAGE_BASE:latest
-        docker push $IMAGE_BASE:latest
+      - name: Build and push images
+        run: |
+          # 1. Definir la etiqueta SHA
+          SHA_TAG=${{ env.IMAGE_NAME }}:${{ github.sha }}
+          # 2. Definir la etiqueta Latest (Monitoreada por Render)
+          LATEST_TAG=${{ env.IMAGE_NAME }}:latest
+          
+          echo "Building image $LATEST_TAG..."
+          # Construir con ambas etiquetas en un solo comando
+          docker build -t $SHA_TAG -t $LATEST_TAG .
+          
+          # Push de ambas etiquetas simultáneamente
+          echo "Pushing images..."
+          docker push $SHA_TAG
+          docker push $LATEST_TAG
