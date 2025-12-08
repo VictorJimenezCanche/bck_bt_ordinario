@@ -1,10 +1,13 @@
 from flask import Blueprint, jsonify 
-from bson import ObjectId
-from config.db import get_db
+import os
 
 health_bp = Blueprint('health', __name__)
 
 
 @health_bp.route('/', methods=['GET'])
 def health():
-    return jsonify({"mensaje": "El servidor está activo en el puerto 8080"}), 200
+    return jsonify({
+        "status": "ok",
+        "service": "Backend Banco de Tiempo",
+        "port": os.getenv("PORT", 8080),
+        "message": "El servidor está activo y funcionando correctamente"}), 200
