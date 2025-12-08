@@ -8,9 +8,6 @@ on:
 permissions:
   contents: read 
 
-env:
-  IMAGE_NAME: ghcr.io/${{ lower(github.repository) }} 
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -28,10 +25,15 @@ jobs:
 
       - name: Build and push images
         run: |
-
-          SHA_TAG=${{ env.IMAGE_NAME }}:${{ github.sha }}
-
-          LATEST_TAG=${{ env.IMAGE_NAME }}:latest
+        
+          
+          REPO_LOWER=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
+          IMAGE_NAME="ghcr.io/$REPO_LOWER"
+          
+          
+          SHA_TAG="${IMAGE_NAME}:${{ github.sha }}"
+        
+          LATEST_TAG="${IMAGE_NAME}:latest"
           
           echo "Building image $LATEST_TAG..."
           docker build -t $SHA_TAG -t $LATEST_TAG .
