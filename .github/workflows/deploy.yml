@@ -9,7 +9,7 @@ permissions:
   contents: read 
 
 env:
-  IMAGE_NAME: ghcr.io/${{ toLower(github.repository) }} 
+  IMAGE_NAME: ghcr.io/${{ lower(github.repository) }} 
 
 jobs:
   build-and-push:
@@ -28,16 +28,14 @@ jobs:
 
       - name: Build and push images
         run: |
-          # 1. Definir la etiqueta SHA
+
           SHA_TAG=${{ env.IMAGE_NAME }}:${{ github.sha }}
-          # 2. Definir la etiqueta Latest (Monitoreada por Render)
+
           LATEST_TAG=${{ env.IMAGE_NAME }}:latest
           
           echo "Building image $LATEST_TAG..."
-          # Construir con ambas etiquetas en un solo comando
           docker build -t $SHA_TAG -t $LATEST_TAG .
           
-          # Push de ambas etiquetas simultáneamente
           echo "Pushing images..."
           docker push $SHA_TAG
           docker push $LATEST_TAG
